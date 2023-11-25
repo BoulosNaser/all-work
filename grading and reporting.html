@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    header {
+      background-color: #3498db;
+      color: #fff;
+      padding: 10px;
+      font-size: 24px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    form {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    label {
+      margin-bottom: 5px;
+    }
+
+    input, textarea {
+      padding: 8px;
+      margin-bottom: 10px;
+      width: 200px;
+      box-sizing: border-box;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    section {
+      margin-top: 20px;
+    }
+
+    h2 {
+      color: #3498db;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    #average {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    #pass-fail {
+      margin-top: 10px;
+      color: #3498db;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>Grading System and Reporting</header>
+
+  <form>
+    <label for="subject">Subject:</label>
+    <input type="text" id="subject" placeholder="Enter subject">
+
+    <label for="grade">Grade:</label>
+    <input type="text" id="grade" placeholder="Enter grade">
+
+    <label for="feedback">Reporting:</label>
+    <textarea id="feedback" placeholder="Enter your reporting"></textarea>
+
+    <div class="button-container">
+      <button type="button" onclick="submitGrade()">Submit</button>
+      <button type="button" onclick="calculateAverage()">Calculate Average</button>
+    </div>
+  </form>
+
+  <section>
+    <h2>Grading Results</h2>
+    <ul id="results-list">
+      <!-- Results will be added dynamically here -->
+    </ul>
+    
+    <div id="average"></div>
+    <div id="pass-fail"></div>
+  </section>
+
+  <script>
+    function submitGrade() {
+      const subjectInput = document.getElementById('subject');
+      const gradeInput = document.getElementById('grade');
+      const feedbackInput = document.getElementById('feedback');
+      const resultsList = document.getElementById('results-list');
+
+      const subject = subjectInput.value.trim();
+      const grade = gradeInput.value.trim();
+      const feedback = feedbackInput.value.trim();
+
+      if (subject === '' || grade === '') {
+        alert('Please enter both subject and grade.');
+        return;
+      }
+
+      const listItem = document.createElement('li');
+      listItem.textContent = `${subject}: ${grade} - Feedback: ${feedback}`;
+      resultsList.appendChild(listItem);
+
+      // Clear input fields
+      subjectInput.value = '';
+      gradeInput.value = '';
+      feedbackInput.value = '';
+    }
+
+    function calculateAverage() {
+      const resultsList = document.getElementById('results-list');
+      const averageElement = document.getElementById('average');
+      const passFailElement = document.getElementById('pass-fail');
+
+      const grades = [];
+
+      // Extract grades from the list
+      for (const listItem of resultsList.children) {
+        const gradeText = listItem.textContent.split(':')[1].split('-')[0].trim();
+        const gradeValue = parseFloat(gradeText);
+
+        if (!isNaN(gradeValue)) {
+          grades.push(gradeValue);
+        }
+      }
+
+      // Calculate average
+      if (grades.length > 0) {
+        const average = grades.reduce((total, grade) => total + grade, 0) / grades.length;
+        averageElement.textContent = `Average Grade: ${average.toFixed(2)}`;
+
+        // Display pass/fail status
+        if (average >= 50) {
+          passFailElement.textContent = 'Pass';
+          passFailElement.style.color = '#27ae60'; // Green color for pass
+        } else {
+          passFailElement.textContent = 'Fail';
+          passFailElement.style.color = '#e74c3c'; // Red color for fail
+        }
+      } else {
+        averageElement.textContent = 'No grades to calculate average.';
+        passFailElement.textContent = '';
+      }
+    }
+  </script>
+</body>
+</html>

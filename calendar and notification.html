@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Calendar with Editable Notifications</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      background-color: #3498db; /* Blue color */
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+      width: 100%;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      text-align: center;
+    }
+
+    #calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .day {
+      text-align: center;
+      padding: 10px;
+      background-color: #3498db; /* Blue color */
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .day:hover {
+      background-color: #217dbb; /* Darker blue on hover */
+    }
+
+    #notifications {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .notification {
+      padding: 10px;
+      background-color: #e74c3c; /* Red color */
+      color: #fff;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .notification input {
+      margin-right: 10px;
+      flex-grow: 1;
+      padding: 5px;
+    }
+
+    .notification span {
+      flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1> Calendar and Notifications</h1>
+  </header>
+
+  <main>
+    <div id="calendar"></div>
+
+    <div id="notifications">
+     
+      <!-- Add more notifications as needed -->
+    </div>
+  </main>
+
+  <script>
+    function createCalendar() {
+      const calendar = document.getElementById('calendar');
+      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+      // Create header row
+      daysOfWeek.forEach(day => {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        dayElement.textContent = day;
+        calendar.appendChild(dayElement);
+      });
+
+      // Get the current date
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const currentYear = currentDate.getFullYear();
+
+      // Get the first day of the month
+      const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+      // Get the last day of the month
+      const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+      // Fill in the calendar with days
+      for (let i = 0; i < firstDayOfMonth; i++) {
+        const emptyDayElement = document.createElement('div');
+        emptyDayElement.className = 'day';
+        calendar.appendChild(emptyDayElement);
+      }
+
+      for (let day = 1; day <= lastDayOfMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        dayElement.textContent = day;
+        dayElement.addEventListener('click', () => showNotification(day));
+        calendar.appendChild(dayElement);
+      }
+    }
+
+    function showNotification(day) {
+      const notificationsContainer = document.getElementById('notifications');
+      const notificationElement = document.createElement('div');
+      notificationElement.className = 'notification';
+
+      const inputElement = document.createElement('input');
+      inputElement.value = `Meeting on ${day}/${new Date().getMonth() + 1}`;
+      notificationElement.appendChild(inputElement);
+
+      const editButton = document.createElement('button');
+      editButton.textContent = 'Edit';
+      editButton.addEventListener('click', () => editNotification(inputElement, day));
+      notificationElement.appendChild(editButton);
+
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = 'Delete';
+      deleteButton.addEventListener('click', () => deleteNotification(notificationElement));
+      notificationElement.appendChild(deleteButton);
+
+      notificationsContainer.appendChild(notificationElement);
+    }
+
+    function editNotification(inputElement, day) {
+      // Replace the input field with plain text
+      const textElement = document.createElement('span');
+      textElement.textContent = inputElement.value;
+      inputElement.parentNode.replaceChild(textElement, inputElement);
+    }
+
+    function deleteNotification(notificationElement) {
+      notificationElement.remove();
+    }
+
+    createCalendar();
+  </script>
+</body>
+</html>
